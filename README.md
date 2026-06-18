@@ -15,171 +15,466 @@
 
 # FINAL PROJECT TEKNOLOGI KOMPUTASI AWAN 2026
 
-## Kelompok B04
+https://github.com/yudi0312/fp-tka-b04
 
-| Anggota | Role | Nama |
-|---------|------|------|
-| 1 | Cloud Architect & Team Lead | Yudi |
-| 2 | Database Engineer | Kaka |
-| 3 | Backend Engineer | Obi |
-| 4 | Frontend & Web Server Engineer | Tiara |
-| 5 | DevOps & Load Balancer Engineer | Aslam |
-| 6 | Performance Testing Engineer | Diva |
-| 7 | Monitoring & Documentation Engineer | Clara |
+Topologi : https://drive.google.com/file/d/1RfMo5t2PSoYrXnEonhq5ToWT8Ue0aepz/view?usp=sharing
+
+VM :
+
+| VM | Hostname | Fungsi | CPU | RAM | SSH | Password |
+|----|----------|--------|-----|-----|-----|----------|
+| VM1 | fe-lb | Frontend + Nginx Load Balancer | 1 vCPU | 1 GB | ssh vm1@20.244.87.0 | Tka1234567890 |
+| VM2 | backend-1 | Flask + Gunicorn | 2 vCPU | 4 GB | ssh azureuser@20.207.194.140 | Tka1234567890 |
+| VM3 | backend-2 | Flask + Gunicorn | 2 vCPU | 4 GB | ssh VM3@40.81.233.30 | Tka1234567890 |
+| VM4 | mongodb | MongoDB Server | 2 vCPU | 4 GB | ssh VM4@4.240.118.65 | Tka1234567890 |
+
+## Struktur Tim 7 Orang
+
+| Anggota | Role | Fokus Penilaian | Nama |
+|---------|------|-----------------|------|
+| 1 | Cloud Architect & Team Lead | Arsitektur Cloud (20%) | Yudi |
+| 2 | Database Engineer | Implementasi (20%) | Kaka |
+| 3 | Backend Engineer | Implementasi (20%) | Obi |
+| 4 | Frontend & Web Server Engineer | Implementasi (20%) | Tiara |
+| 5 | DevOps & Load Balancer Engineer | Arsitektur + Implementasi | Aslam |
+| 6 | Performance Testing Engineer | Load Testing (35%) | Diva |
+| 7 | Monitoring & Documentation Engineer | Dokumentasi (25%) | Clara |
 
 ---
 
-## Introduction
+# ANGGOTA
 
-Proyek ini merupakan implementasi **Order Processing Service** berbasis cloud untuk platform e-commerce. Layanan ini menangani pembuatan pesanan, pengecekan status, dan riwayat transaksi menggunakan REST API berbasis **Python (Flask)** dengan database **MongoDB**, yang di-deploy di atas infrastruktur cloud Azure.
+# Cloud Architect & Team Lead
 
-Arsitektur dirancang untuk mampu menangani lonjakan traffic (flash sale, promo, dsb.) secara andal dan efisien dengan budget maksimal **75 USD/bulan**.
+## Tugas Utama
 
----
+Merancang seluruh arsitektur cloud.
 
-## Architecture
+## Yang Dikerjakan
 
-### Topologi Arsitektur Cloud
+### 1. Menentukan Infrastruktur
 
 ```
-CLIENT LAYER
-     │
-     ▼ HTTPS (80/443)
-┌─────────────────┐
-│  FRONTEND SERVER │  ← VM1 (fe-lb) | 1 vCPU | 1 GB
-│  Nginx + Static  │
-└────────┬────────┘
-         │ REST API HTTP /api/*
-         ▼
-┌─────────────────┐         ┌──────────────────┐
-│  LOAD BALANCER  │         │  LOAD TESTING    │
-│  Nginx          │◄────────│  HOST (Locust)   │
-│  VM1 (fe-lb)    │  HTTP   │  Host Terpisah   │
-│  1 vCPU | 1 GB  │ Requests└──────────────────┘
-└────────┬────────┘
-    HTTP :5000 Round Robin (Least Connection)
-    ┌────┴────┐
-    ▼         ▼
-┌────────┐ ┌────────┐
-│Backend1│ │Backend2│  APPLICATION LAYER
-│ VM2    │ │ VM3    │
-│2vCPU   │ │2vCPU   │
-│4 GB    │ │4 GB    │
-└────┬───┘ └───┬────┘
-     └────┬────┘
-          │ MongoDB Protocol :27017
-          ▼
-    ┌───────────┐
-    │  MONGODB  │  DATA LAYER
-    │  SERVER   │
-    │   VM4     │
-    │ 2 vCPU    │
-    │   4 GB    │
-    └───────────┘
+VM1 = Nginx Load Balancer
+VM2 = Backend Flask 1
+VM3 = Backend Flask 2
+VM4 = MongoDB
 ```
 
-### Spesifikasi VM
+### 2. Membuat Diagram Draw.io
 
-| VM | Hostname | Fungsi | CPU | RAM | Harga/Bulan |
-|----|----------|--------|-----|-----|-------------|
-| VM1 | fe-lb | Frontend + Nginx Load Balancer | 1 vCPU | 1 GB | $4.49 |
-| VM2 | backend-1 | Flask + Gunicorn | 2 vCPU | 4 GB | $17.96 |
-| VM3 | backend-2 | Flask + Gunicorn | 2 vCPU | 4 GB | $17.96 |
-| VM4 | mongodb | MongoDB Server | 2 vCPU | 4 GB | $17.96 |
-| **Total** | | | | | **$58.37** |
+![Topologi Arsitektur Cloud]()
 
-> ✅ Total biaya **$58.37/bulan** — di bawah batas maksimum **$75/bulan**.
+Diagram wajib memuat:
 
-### Alasan Pemilihan Konfigurasi
+- User
+- Load Balancer
+- Backend
+- MongoDB
+- Frontend
+
+### 3. Cost Analysis
+
+![Azure VM Pricing]()
+
+| VM | CPU | RAM | Harga |
+|----|-----|-----|-------|
+| vm1 | 1 CPU | 1 GB | $4,49 |
+| vm2 | 2 CPU | 4 GB | $17,96 |
+| vm3 | 2 CPU | 4 GB | $17,96 |
+| vm4 | 2 CPU | 4 GB | $17,96 |
+
+Total:
+
+```
+58,37 USD
+```
+
+Sudah sesuai dengan requirement soal, dimana maks untuk budget VM dibawah 75 USD.
+
+**Alasan Pemilihan Konfigurasi:**
 
 - **VM1 (1 vCPU, 1 GB)** — Cukup untuk Nginx yang hanya meneruskan request (tidak memproses logika bisnis). Spec kecil menekan biaya.
 - **VM2 & VM3 (2 vCPU, 4 GB)** — Backend Flask + Gunicorn membutuhkan lebih banyak resource untuk menangani concurrent request. Dua instance memungkinkan horizontal scaling.
 - **VM4 (2 vCPU, 4 GB)** — MongoDB dipisahkan dari app server untuk performa query yang lebih stabil dan tidak berkompetisi resource dengan backend.
 - **Load Balancing Least Connection** — Lebih optimal dari round-robin karena mendistribusikan request ke backend dengan koneksi aktif paling sedikit, ideal saat beban tidak merata.
 
+### 4. Mengatur Timeline Tim
+
+Membagi pekerjaan dan memastikan integrasi.
+
 ---
 
-## Implementation
+# ANGGOTA 2
 
-### 1. Database (MongoDB — VM4)
+# Database Engineer
 
-MongoDB di-install di VM4 dengan konfigurasi terpisah dari backend.
+check : https://github.com/yudi0312/fp-tka-b04/tree/main/Resources/DB
+
+Folder:
+
+```
+Resources/DB
+```
+
+## Tugas Utama
+
+Mengurus MongoDB.
+
+## Yang Dikerjakan
+
+### Install MongoDB
+
+Ubuntu:
 
 ```bash
 sudo apt install mongodb
 ```
 
-**Konfigurasi Database:**
-- Private IP: `10.0.0.4`
-- Port: `27017`
-- Username: `admin`
-- Database: `orderdb`
+### Restore Database
 
-**Membuat Index untuk optimasi query:**
+```bash
+mongorestore dump/orderdb
+```
+
+### Verifikasi Collection
 
 ```js
-db.orders.createIndex({ order_id: 1 })
-db.orders.createIndex({ created_at: -1 })
+show dbs
+
+use orderdb
+
+show collections
+```
+
+### Membuat Index
+
+```js
+db.orders.createIndex({order_id: 1})
+```
+
+```js
+db.orders.createIndex({created_at: -1})
 ```
 
 Index pada `order_id` dan `created_at` mempercepat query history dan pencarian order secara signifikan.
 
-**Verifikasi:**
+### Monitoring MongoDB
 
 ```bash
-sudo systemctl status mongod
-mongosh -u admin -p "Admin@12345" --authenticationDatabase admin
-use orderdb
-show collections
-db.orders.getIndexes()
+mongostat
 ```
 
-Screenshot konfirmasi: MongoDB running, collection `orders` muncul, index berhasil dibuat.
+### Screenshot
+
+- MongoDB running
+
+![MongoDB Running]()
+
+- Collection muncul
+
+![Collection Muncul]()
+
+- Index berhasil dibuat
+
+![Index Berhasil Dibuat]()
+
+### Informasi Database
+
+- Private IP: `10.0.0.4`
+- Port: `27017`
+- Username: `admin`
+- Password: `Admin@12345`
+- Database: `orderdb`
 
 ---
 
-### 2. Backend (Flask + Gunicorn — VM2 & VM3)
+# ANGGOTA 3
 
-Flask API di-deploy dengan Gunicorn sebagai WSGI server untuk performa produksi.
+# Backend Engineer
+
+Folder:
+
+```
+Resources/BE
+```
+
+## Tugas Utama
+
+Deploy Flask API.
+
+## Yang Dikerjakan
+
+### Install Dependency
 
 ```bash
 pip install -r requirements.txt
+```
+
+### Menjalankan Flask
+
+```bash
+python app.py
+```
+
+### Setup Gunicorn
+
+```bash
 gunicorn -w 4 -b 0.0.0.0:5000 app:app
 ```
 
-**Systemd service** dikonfigurasi agar backend berjalan otomatis saat reboot:
+### Endpoint Testing
+
+Test:
+
+```
+POST /order
+```
+
+```
+GET /order/<id>
+```
+
+```
+GET /orders
+```
+
+```
+PUT /order/<id>
+```
+
+### Screenshot
+
+- Backend sukses
 
 ```bash
 sudo systemctl status tka-backend --no-pager
-sudo ss -tulpn | grep 5000
 ```
 
-**Health check:**
+![Backend Sukses]()
 
+- `sudo ss -tulpn | grep 5000`
+
+![Port 5000 Listening]()
+
+- Testing Health
+
+![Health Check]()
+
+Response:
+```json
+{
+  "database": "connected",
+  "status": "ok",
+  "timestamp": "2026-06-18T08:13:51.624541+00:00"
+}
+```
+
+- Test POST ORDER
+
+![POST Order]()
+
+Request:
 ```bash
-curl -s http://127.0.0.1:5000/health | jq
-# Output: { "database": "connected", "status": "ok", "timestamp": "..." }
+ORDER_ID=$(curl -s -X POST http://127.0.0.1:5000/order \
+  -H "Content-Type: application/json" \
+  -d '{"product":"Laptop Gaming","quantity":2,"price":150000}' | jq -r '.order_id')
+```
+
+Response (201 Created):
+```json
+{
+  "_id": "6a33a8cc9209be684ce4W497",
+  "order_id": "f754d976-3b33-4a07-afde-770a0354fa22",
+  "product": "Laptop Gaming",
+  "quantity": 2,
+  "price": 150000.0,
+  "status": "pending",
+  "payment_status": "unpaid",
+  "total": 300000.0,
+  "created_at": "2026-06-18T08:14:04.496000",
+  "updated_at": "2026-06-18T08:14:04.496000"
+}
+```
+
+- Test GET Detail Order
+
+![GET Detail Order]()
+
+Request:
+```bash
+curl -s http://127.0.0.1:5000/order/$ORDER_ID | jq
+```
+
+Response (200 OK):
+```json
+{
+  "_id": "6a33a8cc9209be684ce4W497",
+  "order_id": "f754d976-3b33-4a07-afde-770a0354fa22",
+  "product": "Laptop Gaming",
+  "quantity": 2,
+  "price": 150000.0,
+  "status": "pending",
+  "payment_status": "unpaid",
+  "total": 300000.0
+}
+```
+
+- Test PUT Update Status
+
+![PUT Update Status]()
+
+Request:
+```bash
+curl -s -X PUT http://127.0.0.1:5000/order/$ORDER_ID \
+  -H "Content-Type: application/json" \
+  -d '{"status":"completed"}' | jq
+```
+
+Response (200 OK):
+```json
+{
+  "order_id": "f754d976-3b33-4a07-afde-770a0354fa22",
+  "status": "completed"
+}
+```
+
+- Cek ulang order setelah di-update
+
+![Order Setelah Update]()
+
+Response (200 OK):
+```json
+{
+  "_id": "6a33a8cc9209be684ce4W497",
+  "order_id": "f754d976-3b33-4a07-afde-770a0354fa22",
+  "product": "Laptop Gaming",
+  "status": "completed",
+  "payment_status": "paid",
+  "total": 300000.0,
+  "updated_at": "2026-06-18T08:14:58.046000"
+}
+```
+
+- Test GET semua orders
+
+![GET All Orders 1]()
+
+![GET All Orders 2]()
+
+Request:
+```bash
+curl -s "http://127.0.0.1:5000/orders?limit=5" | jq
+```
+
+Response (200 OK):
+```json
+{
+  "data": [ "..." ],
+  "limit": 5,
+  "page": 1,
+  "total": 10001,
+  "total_pages": 2001
+}
+```
+
+- Test not found
+
+![Not Found]()
+
+Response:
+```json
+{
+  "error": "Order not found"
+}
+```
+
+### Notes untuk Frontend
+
+**Catatan integrasi:**
+
+Frontend cukup arahkan API URL ke:
+
+```js
+const API_BASE_URL = "http://20.207.194.140:5000";
 ```
 
 ---
 
-### 3. Frontend & Web Server (Nginx — VM1)
+# ANGGOTA 4
 
-Frontend statis di-hosting menggunakan Nginx di VM1.
+# Frontend & Web Server Engineer
+
+Folder:
+
+```
+Resources/FE
+```
+
+## Tugas Utama
+
+Deploy frontend.
+
+## Yang Dikerjakan
+
+### Install Nginx
 
 ```bash
 sudo apt install nginx
-# Copy file frontend
-cp index.html styles.css /var/www/html/
 ```
 
-Frontend dikonfigurasi untuk terhubung ke Load Balancer sebagai API endpoint.
+### Hosting Frontend
+
+Copy:
+
+```
+index.html
+styles.css
+```
+
+ke
+
+```
+/var/www/html
+```
+
+### Konfigurasi API URL
+
+Sesuaikan URL backend.
+
+### Integrasi Frontend ↔ Backend
+
+Test:
+
+- Create Order
+- View History
+- Check Status
+
+### Screenshot
+
+- Frontend berjalan
+
+![Frontend Berjalan]()
+
+- Frontend terhubung API
+
+![Frontend Terhubung API]()
 
 ---
 
-### 4. Load Balancer (Nginx — VM1)
+# ANGGOTA 5
 
-Nginx dikonfigurasi sebagai reverse proxy dengan strategi **Least Connection**:
+# DevOps & Load Balancer Engineer
+
+## Tugas Utama
+
+Mengatur scaling dan load balancing.
+
+## Yang Dikerjakan
+
+### Install Nginx Load Balancer
+
+Konfigurasi:
 
 ```nginx
 upstream backend_cluster {
@@ -187,7 +482,11 @@ upstream backend_cluster {
     server 20.207.194.140:5000;  # VM2 backend-1
     server 40.81.233.30:5000;    # VM3 backend-2
 }
+```
 
+### Reverse Proxy
+
+```nginx
 server {
     listen 80;
     server_name 20.244.87.0;
@@ -199,7 +498,7 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    # API load balanced ke backend
+    # API ngeload balanced ke backend
     location /order {
         proxy_pass http://backend_cluster;
         proxy_set_header Host $host;
@@ -222,133 +521,130 @@ server {
 }
 ```
 
+### Aktivasi Config
+
 ```bash
+# Enable config
+sudo ln -s /etc/nginx/sites-available/loadbalancer /etc/nginx/sites-enabled/
+
+# Hapus default biar tidak conflict
+sudo rm /etc/nginx/sites-enabled/default
+
+# Test config
 sudo nginx -t
+
+# Kalau berhasil reload
 sudo systemctl reload nginx
 sudo systemctl enable nginx
 ```
 
----
+### Docker (Opsional)
 
-## Endpoint Testing
+Buat:
 
-Seluruh endpoint diuji melalui VM backend langsung maupun melalui Load Balancer.
-
-### 1. POST /order — Membuat Pesanan Baru
-
-```bash
-ORDER_ID=$(curl -s -X POST http://localhost/order \
-  -H "Content-Type: application/json" \
-  -d '{"product":"Laptop Gaming","quantity":2,"price":150000}' | jq -r '.order_id')
+```
+Dockerfile
+docker-compose.yml
 ```
 
-**Response (201 Created):**
-```json
-{
-  "_id": "6a33a8cc9209be684ce4W497",
-  "order_id": "f754d976-3b33-4a07-afde-770a0354fa22",
-  "product": "Laptop Gaming",
-  "quantity": 2,
-  "price": 150000.0,
-  "status": "pending",
-  "payment_status": "unpaid",
-  "total": 300000.0,
-  "created_at": "2026-06-18T08:14:04.496000",
-  "updated_at": "2026-06-18T08:14:04.496000"
-}
-```
+### Testing Load Balancer
 
----
+Pastikan request terbagi ke backend.
 
-### 2. GET /order/\<order_id\> — Cek Status Pesanan
-
-```bash
-curl -s http://localhost/order/$ORDER_ID | jq
-```
-
-**Response (200 OK):**
-```json
-{
-  "_id": "6a33a8cc9209be684ce4W497",
-  "order_id": "f754d976-3b33-4a07-afde-770a0354fa22",
-  "product": "Laptop Gaming",
-  "status": "pending",
-  "payment_status": "unpaid",
-  "total": 300000.0
-}
-```
-
----
-
-### 3. PUT /order/\<order_id\> — Update Status Pesanan
-
-```bash
-curl -s -X PUT http://localhost/order/$ORDER_ID \
-  -H "Content-Type: application/json" \
-  -d '{"status":"completed"}' | jq
-```
-
-**Response (200 OK):**
-```json
-{
-  "order_id": "f754d976-3b33-4a07-afde-770a0354fa22",
-  "status": "completed"
-}
-```
-
----
-
-### 4. GET /orders — Riwayat Semua Pesanan
-
-```bash
-curl -s "http://localhost/orders?limit=5" | jq
-```
-
-**Response (200 OK):**
-```json
-{
-  "data": [ ... ],
-  "limit": 5,
-  "page": 1,
-  "total": 10001,
-  "total_pages": 2001
-}
-```
-
----
-
-### 5. GET /order/\<id-tidak-ada\> — Not Found
-
-```bash
-curl -s http://localhost/order/order-tidak-ada | jq
-# Output: { "error": "Order not found" }
-```
-
----
-
-### Verifikasi Load Balancer
-
-Request terbagi ke Backend 1 dan Backend 2 (terlihat dari Nginx access log):
+Verifikasi dari Nginx access log:
 
 ```
 TKA-Backend1 gunicorn[15911]: 182.5.243.39 -- [18/Jun/2026:14:59:26] "GET /orders HTTP/1.0" 200
 TKA-Backend2 gunicorn[871]:   20.244.87.0 -- [18/Jun/2026:16:27:06] "GET /orders HTTP/1.0" 200
 ```
 
+### Screenshot
+
+- Status Nginx
+
+![Status Nginx]()
+
+- Config Load Balancer
+
+![Config Load Balancer]()
+
+- Backend cluster
+
+![Backend Cluster]()
+
+- Log Nginx
+
+![Log Nginx]()
+
+- Request muncul di Backend 1 dan Backend 2
+
+![Request Backend 1]()
+
+![Request Backend 2]()
+
 ---
 
-## Load Testing
+# ANGGOTA 6
 
-Load testing dilakukan menggunakan **Locust** dengan target host `http://20.244.87.0`.
+# Performance Testing Engineer
 
-```bash
-locust -f locustfile_order.py --host=http://20.244.87.0
-# Buka: http://localhost:8089/
+Folder:
+
+```
+Resources/Test
 ```
 
-### Skenario 1 — Maximum RPS (Ramp 10)
+## Tugas Utama
 
-> Tujuan: Mencari RPS tertinggi dengan failure 0%
+Locust Testing.
+
+## Yang Dikerjakan
+
+### Setup Locust
+
+```bash
+pip install locust
+
+#atau
+
+sudo apt install python3-locust
+```
+
+```bash
+cd /mnt/d/ITS/4\ TKA/fp-tka-b04/Resources/Test
+
+locust -f locustfile_order.py --host=http://20.244.87.0
+```
+
+buka http://localhost:8089/
+
+![Locust UI]()
+
+### Skenario 1
+
+Maximum RPS. Durasi: 60 detik
+
+**User: 50 | Ramp: 10**
+
+![Skenario 1 - 50 Users Stats]()
+
+![Skenario 1 - 50 Users Chart]()
+
+**User: 100 | Ramp: 10**
+
+![Skenario 1 - 100 Users Stats]()
+
+![Skenario 1 - 100 Users Chart]()
+
+**User: 200 | Ramp: 10**
+
+![Skenario 1 - 200 Users Stats]()
+
+![Skenario 1 - 200 Users Chart]()
+
+![Skenario 1 - Summary]()
+
+**Rata-rata RPS** tertinggi dengan tingkat kegagalan 0%: **83.2 RPS**
 
 | Run | Users | Ramp | RPS | Failure |
 |-----|-------|------|-----|---------|
@@ -356,13 +652,25 @@ locust -f locustfile_order.py --host=http://20.244.87.0
 | #2 | 100 | 10 | ~83.2 | 0% |
 | #3 | 200 | 10 | ~191.3 | 45% ❌ |
 
-**Kesimpulan:** Rata-rata RPS tertinggi dengan failure 0% = **83.2 RPS**
-
 ---
 
-### Skenario 2 — Peak Concurrency (Ramp 50)
+### Skenario 2
 
-> Tujuan: Mencari jumlah user concurrent tertinggi dengan failure 0%
+**User: 100 | Ramp: 50**
+
+![Skenario 2 - 100 Users]()
+
+**User: 200 | Ramp: 50**
+
+![Skenario 2 - 200 Users]()
+
+**User: 300 | Ramp: 50**
+
+![Skenario 2 - 300 Users]()
+
+**User: 400 | Ramp: 50**
+
+![Skenario 2 - 400 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -371,22 +679,44 @@ locust -f locustfile_order.py --host=http://20.244.87.0
 | #3 | 300 | 50 | 0% ✅ |
 | #4 | 400 | 50 | 57% ❌ |
 
-**Kesimpulan:** Concurrent user tertinggi dengan failure 0% = **300 users**
+Kesimpulan
+Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **300**
 
 ---
 
-### Skenario 3 — Peak Concurrency (Ramp 100)
+### Skenario 3
+
+**User: 100 | Ramp: 100**
+
+![Skenario 3 - 100 Users]()
+
+**User: 200 | Ramp: 100**
+
+![Skenario 3 - 200 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
 | #1 | 100 | 100 | 0% ✅ |
 | #2 | 200 | 100 | 98% ❌ |
 
-**Kesimpulan:** Concurrent user tertinggi dengan failure 0% = **100 users**
+Kesimpulan
+Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100**
 
 ---
 
-### Skenario 4 — Peak Concurrency (Ramp 200)
+### Skenario 4
+
+**User: 100 | Ramp: 200**
+
+![Skenario 4 - 100 Users]()
+
+**User: 200 | Ramp: 200**
+
+![Skenario 4 - 200 Users]()
+
+**User: 300 | Ramp: 200**
+
+![Skenario 4 - 300 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -394,20 +724,46 @@ locust -f locustfile_order.py --host=http://20.244.87.0
 | #2 | 200 | 200 | 0% ✅ |
 | #3 | 300 | 200 | 73% ❌ |
 
-**Kesimpulan:** Concurrent user tertinggi dengan failure 0% = **200 users**
+Kesimpulan
+Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **200**
 
 ---
 
-### Skenario 5 — Peak Concurrency (Ramp 500)
+### Skenario 5
+
+**User: 100 | Ramp: 500**
+
+![Skenario 5 - 100 Users]()
+
+**User: 200 | Ramp: 500**
+
+![Skenario 5 - 200 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
 | #1 | 100 | 500 | 0% ✅ |
 | #2 | 200 | 500 | 10% ❌ |
 
-**Kesimpulan:** Concurrent user tertinggi dengan failure 0% = **100 users**
+Kesimpulan
+Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100**
 
----
+### Screenshot
+
+- Statistics
+
+![Statistics]()
+
+- Charts
+
+![Charts]()
+
+- RPS
+
+![RPS]()
+
+- Failure
+
+![Failure]()
 
 ### Ringkasan Hasil Load Testing
 
@@ -423,15 +779,98 @@ locust -f locustfile_order.py --host=http://20.244.87.0
 
 ---
 
+# ANGGOTA 7
+
+# Monitoring & Documentation Engineer
+
+## Tugas Utama
+
+Mengumpulkan seluruh hasil dan membuat laporan.
+
+## Yang Dikerjakan
+
+### Monitoring Resource
+
+Saat Locust berjalan.
+
+Gunakan:
+
+```bash
+htop
+```
+
+```bash
+vmstat 1
+```
+
+atau
+
+```bash
+docker stats
+```
+
+### Screenshot
+
+Untuk setiap skenario:
+
+- CPU usage & RAM usage — Skenario 1
+
+![Monitor Skenario 1]()
+
+- CPU usage & RAM usage — Skenario 2
+
+![Monitor Skenario 2]()
+
+- CPU usage & RAM usage — Skenario 3
+
+![Monitor Skenario 3]()
+
+- CPU usage & RAM usage — Skenario 4
+
+![Monitor Skenario 4]()
+
+- CPU usage & RAM usage — Skenario 5
+
+![Monitor Skenario 5]()
+
+### Menulis README
+
+Bagian:
+
+```
+Introduction
+```
+
+```
+Architecture
+```
+
+```
+Implementation
+```
+
+```
+Endpoint Testing
+```
+
+```
+Load Testing
+```
+
+```
+Conclusion
+```
+
+---
+
 ## Conclusion
 
 Arsitektur cloud yang dirancang berhasil memenuhi seluruh requirement final project:
 
-1. **Budget terkendali** — Total biaya $58.37/bulan, di bawah batas $75/bulan.
-2. **Skalabilitas horizontal** — Dua backend server (VM2 & VM3) dengan Nginx Load Balancer (Least Connection) terbukti mendistribusikan traffic secara merata.
-3. **Performa stabil** — Sistem mampu menangani hingga **300 concurrent users** dengan 0% failure (Skenario 2, Ramp 50), dan mencapai maksimum **83.2 RPS** tanpa error.
+1. **Budget terkendali** — Total biaya $58,37/bulan, di bawah batas maksimum $75/bulan.
+2. **Skalabilitas horizontal** — Dua backend server (VM2 & VM3) dengan Nginx Load Balancer strategi Least Connection terbukti mendistribusikan traffic secara merata, dibuktikan dari log Nginx yang mencatat request masuk ke Backend 1 dan Backend 2.
+3. **Performa stabil** — Sistem mampu menangani hingga **300 concurrent users** dengan 0% failure (Skenario 2, Ramp 50), dan mencapai maksimum **83.2 RPS** tanpa error (Skenario 1).
 4. **Database terpisah** — MongoDB di VM terpisah (VM4) meningkatkan performa query dan mencegah resource contention dengan backend.
-5. **Index MongoDB** — Index pada `order_id` dan `created_at` mengoptimalkan query GET /orders secara signifikan.
+5. **Index MongoDB** — Index pada `order_id` dan `created_at` mengoptimalkan kecepatan query `GET /orders` secara signifikan.
 
-Bottleneck utama yang ditemukan adalah pada ramp rate tinggi (100+) — sistem tidak sempat warm up sehingga terjadi spike failure sementara. Untuk production, rekomendasi ke depan adalah menambah jumlah Gunicorn worker dan mengimplementasikan connection pooling MongoDB yang lebih agresif.
-
+Bottleneck utama yang ditemukan adalah pada ramp rate tinggi (100+) — sistem tidak sempat warm up sehingga terjadi spike failure sementara. Rekomendasi ke depan: tambah jumlah Gunicorn worker dan implementasikan connection pooling MongoDB yang lebih agresif.
