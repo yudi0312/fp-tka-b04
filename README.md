@@ -1,7 +1,5 @@
 # **FINAL PROJECT TEKNOLOGI KOMPUTASI AWAN 2026**
-
-
-**KELOMPOK 4 KELAS B**
+## **KELOMPOK 4 KELAS B**
 
 | Nama | NRP |
 | --- | --- |
@@ -13,8 +11,6 @@
 | Mutiara Diva Jaladitha | 5027241083 |
 | I Gede Bagus Saka | 5027241088 |
 
-# FINAL PROJECT TEKNOLOGI KOMPUTASI AWAN 2026
-
 ## Introduction
 
 Proyek ini merupakan implementasi **Order Processing Service** berbasis cloud untuk platform e-commerce. Layanan ini menangani pembuatan pesanan, pengecekan status, dan riwayat transaksi menggunakan REST API berbasis **Python (Flask)** dengan database **MongoDB**, yang di-deploy di atas infrastruktur cloud Azure.
@@ -23,14 +19,13 @@ Arsitektur dirancang untuk mampu menangani lonjakan traffic (flash sale, promo, 
 
 ## Spesifikasi VM
 
-VM :
-
-| VM | Hostname | Fungsi | CPU | RAM | SSH | Password |
-|----|----------|--------|-----|-----|-----|----------|
-| VM1 | fe-lb | Frontend + Nginx Load Balancer | 1 vCPU | 1 GB | ssh vm1@20.244.87.0 | Tka1234567890 |
-| VM2 | backend-1 | Flask + Gunicorn | 2 vCPU | 4 GB | ssh azureuser@20.207.194.140 | Tka1234567890 |
-| VM3 | backend-2 | Flask + Gunicorn | 2 vCPU | 4 GB | ssh VM3@40.81.233.30 | Tka1234567890 |
-| VM4 | mongodb | MongoDB Server | 2 vCPU | 4 GB | ssh VM4@4.240.118.65 | Tka1234567890 |
+| VM | Hostname | Fungsi | CPU | RAM | Harga/Bulan |
+|----|----------|--------|-----|-----|-------------|
+| VM1 | fe-lb | Frontend + Nginx Load Balancer | 1 vCPU | 1 GB | $4.49 |
+| VM2 | backend-1 | Flask + Gunicorn | 2 vCPU | 4 GB | $17.96 |
+| VM3 | backend-2 | Flask + Gunicorn | 2 vCPU | 4 GB | $17.96 |
+| VM4 | mongodb | MongoDB Server | 2 vCPU | 4 GB | $17.96 |
+| **Total** | | | | | **$58.37** |
 
 ---
 
@@ -60,6 +55,8 @@ VM4 = MongoDB
 
 Diagram arsitektur dibuat menggunakan draw.io untuk menggambarkan alur request dari user hingga ke database, termasuk komponen load balancer dan dua backend server.
 
+<img width="575" height="790" alt="topologi1" src="https://github.com/user-attachments/assets/ed0de35f-6818-46a3-be20-372cea7072a5" />
+
 Diagram memuat komponen:
 
 - **Client Layer**: User mengakses sistem melalui web browser
@@ -71,8 +68,6 @@ Diagram memuat komponen:
 ### 3. Cost Analysis
 
 Pemilihan spesifikasi VM disesuaikan dengan kebutuhan beban kerja masing-masing layer, sekaligus menjaga total biaya di bawah batas maksimum $75/bulan.
-
-![Azure VM Pricing]()
 
 | VM | CPU | RAM | Harga |
 |----|-----|-----|-------|
@@ -166,23 +161,15 @@ mongostat
 
 - MongoDB running
 
-![MongoDB Running]()
+<img width="2880" height="528" alt="Screenshot 2026-06-17 225948" src="https://github.com/user-attachments/assets/7b6be576-2fcd-40db-a502-96213968bcfb" />
 
 - Collection muncul
 
-![Collection Muncul]()
+<img width="2876" height="624" alt="2mongodb" src="https://github.com/user-attachments/assets/b4b25fcb-6bb2-4266-a0ad-7b65b2c3d8c6" />
 
 - Index berhasil dibuat
 
-![Index Berhasil Dibuat]()
-
-### Informasi Database
-
-- Private IP: `10.0.0.4`
-- Port: `27017`
-- Username: `admin`
-- Password: `Admin@12345`
-- Database: `orderdb`
+<img width="2880" height="1196" alt="3mongo" src="https://github.com/user-attachments/assets/ae8d25e3-78f6-4fcf-bbbb-c009a65418da" />
 
 ---
 
@@ -255,28 +242,20 @@ PUT /order/<id>
 sudo systemctl status tka-backend --no-pager
 ```
 
-![Backend Sukses]()
+<img width="2145" height="478" alt="Screenshot 2026-06-18 151652" src="https://github.com/user-attachments/assets/515332ea-0502-4eda-835b-4e26a3d3d580" />
 
 - `sudo ss -tulpn | grep 5000`
 
-![Port 5000 Listening]()
+<img width="1959" height="45" alt="be2" src="https://github.com/user-attachments/assets/6dd174c5-ed08-4a73-a866-c59629627313" />
+
 
 - Testing Health
 
-![Health Check]()
-
-Response:
-```json
-{
-  "database": "connected",
-  "status": "ok",
-  "timestamp": "2026-06-18T08:13:51.624541+00:00"
-}
-```
+<img width="872" height="120" alt="be3" src="https://github.com/user-attachments/assets/70fc8bbf-2dad-4c52-abec-166e913482e8" />
 
 - Test POST ORDER
 
-![POST Order]()
+<img width="979" height="121" alt="be4" src="https://github.com/user-attachments/assets/da60c73f-bf59-470c-906e-f9e52cac09a1" />
 
 Request:
 ```bash
@@ -303,7 +282,8 @@ Response (201 Created):
 
 - Test GET Detail Order
 
-![GET Detail Order]()
+<img width="955" height="272" alt="get detail" src="https://github.com/user-attachments/assets/1b10612b-dc3e-43c1-982a-64142fd37621" />
+
 
 Request:
 ```bash
@@ -326,7 +306,7 @@ Response (200 OK):
 
 - Test PUT Update Status
 
-![PUT Update Status]()
+<img width="963" height="136" alt="put update status" src="https://github.com/user-attachments/assets/bee10aa5-2c7b-4250-b902-7291d1a3e6e2" />
 
 Request:
 ```bash
@@ -345,7 +325,8 @@ Response (200 OK):
 
 - Cek ulang order setelah di-update
 
-![Order Setelah Update]()
+<img width="991" height="273" alt="cek ulang order" src="https://github.com/user-attachments/assets/4c9bb631-5001-4f0a-a4d0-f5fec98214fb" />
+
 
 Response (200 OK):
 ```json
@@ -362,29 +343,13 @@ Response (200 OK):
 
 - Test GET semua orders
 
-![GET All Orders 1]()
+<img width="1005" height="1307" alt="get all order" src="https://github.com/user-attachments/assets/d997922c-5df1-41ca-9772-4a52bc9f4ea9" />
 
-![GET All Orders 2]()
-
-Request:
-```bash
-curl -s "http://127.0.0.1:5000/orders?limit=5" | jq
-```
-
-Response (200 OK):
-```json
-{
-  "data": [ "..." ],
-  "limit": 5,
-  "page": 1,
-  "total": 10001,
-  "total_pages": 2001
-}
-```
+<img width="973" height="992" alt="get all order2" src="https://github.com/user-attachments/assets/02895eed-30c8-40e3-9d71-73667718c61b" />
 
 - Test not found
 
-![Not Found]()
+<img width="1024" height="82" alt="not found" src="https://github.com/user-attachments/assets/0b179bb4-0568-4232-a41b-5298e334ebf2" />
 
 Response:
 ```json
@@ -556,25 +521,22 @@ TKA-Backend2 gunicorn[871]:   20.244.87.0 -- [18/Jun/2026:16:27:06] "GET /orders
 
 - Status Nginx
 
-![Status Nginx]()
+<img width="1639" height="538" alt="status nginx" src="https://github.com/user-attachments/assets/ecddbe28-720a-4148-b69d-6318a4732547" />
 
 - Config Load Balancer
 
-![Config Load Balancer]()
-
-- Backend cluster
-
-![Backend Cluster]()
+<img width="818" height="851" alt="config load balancer" src="https://github.com/user-attachments/assets/2144a0fe-969e-4bfd-a341-1d04ce329755" />
 
 - Log Nginx
 
-![Log Nginx]()
+<img width="1698" height="171" alt="Screenshot 2026-06-18 233007" src="https://github.com/user-attachments/assets/1f534940-3ff7-4f17-9714-aef61514e57e" />
+
 
 - Request muncul di Backend 1 dan Backend 2
 
-![Request Backend 1]()
+<img width="1693" height="54" alt="Screenshot 2026-06-18 234116" src="https://github.com/user-attachments/assets/a6b4cc5d-baf2-4f78-a729-124e7301f5e0" />
 
-![Request Backend 2]()
+<img width="1689" height="31" alt="Screenshot 2026-06-18 233316" src="https://github.com/user-attachments/assets/da0e6921-3d1d-4e68-bfc5-99d0105d7991" />
 
 ---
 
@@ -614,7 +576,8 @@ locust -f locustfile_order.py --host=http://20.244.87.0
 
 Buka dashboard Locust di browser: http://localhost:8089/
 
-![Locust UI]()
+<img width="1920" height="663" alt="image" src="https://github.com/user-attachments/assets/e061776a-f18a-46d1-935c-d29f8638e4f5" />
+
 
 ### Skenario 1
 
@@ -662,21 +625,24 @@ Tujuan skenario ini adalah mencari jumlah **concurrent user tertinggi** yang mas
 
 **User: 100 | Ramp: 50**
 
-![Skenario 2 - 100 Users]()
+<img width="579" height="396" alt="s2 - 1" src="https://github.com/user-attachments/assets/d2f35540-374c-444e-9b21-2f6f6dfe3881" />
+
 
 **User: 200 | Ramp: 50**
 
-![Skenario 2 - 200 Users]()
+<img width="571" height="392" alt="s2 - 2" src="https://github.com/user-attachments/assets/8cfbe8c6-8c81-4678-8ac9-fc1043110ab2" />
+
 
 **User: 300 | Ramp: 50**
 
-![Skenario 2 - 300 Users]()
+<img width="571" height="389" alt="s2 - 300" src="https://github.com/user-attachments/assets/b16274c0-6c35-41f9-bb90-a68578179c43" />
+
 
 **User: 400 | Ramp: 50**
 
 Pada 400 user, sistem mulai mengalami kegagalan sebesar 57%, menandakan batas kapasitas terlampaui.
 
-![Skenario 2 - 400 Users]()
+<img width="573" height="392" alt="s2 - 400" src="https://github.com/user-attachments/assets/09695af5-b9d1-4653-a928-47e9c3949c2d" />
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -696,13 +662,15 @@ Pengujian diulang dengan ramp rate lebih agresif (100 user/detik) untuk melihat 
 
 **User: 100 | Ramp: 100**
 
-![Skenario 3 - 100 Users]()
+<img width="572" height="392" alt="s3 - 100" src="https://github.com/user-attachments/assets/d98f3639-bef4-4dfd-bede-54b983e07c1e" />
+
 
 **User: 200 | Ramp: 100**
 
 Pada ramp 100, sistem sudah gagal di 200 user karena koneksi datang terlalu cepat sebelum backend sempat warm up.
 
-![Skenario 3 - 200 Users]()
+<img width="572" height="391" alt="s3 - 200" src="https://github.com/user-attachments/assets/10866145-4959-4958-960d-1b112e187af2" />
+
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -720,17 +688,20 @@ Ramp rate dinaikkan ke 200 user/detik untuk mensimulasikan lonjakan traffic mend
 
 **User: 100 | Ramp: 200**
 
-![Skenario 4 - 100 Users]()
+<img width="576" height="394" alt="s4 - 100" src="https://github.com/user-attachments/assets/58c69f82-2b28-4b71-a2a4-100a55a16e3d" />
+
 
 **User: 200 | Ramp: 200**
 
-![Skenario 4 - 200 Users]()
+<img width="574" height="391" alt="s4 - 200" src="https://github.com/user-attachments/assets/339d0886-16fe-4b54-8fee-68beed3d3dd8" />
+
 
 **User: 300 | Ramp: 200**
 
 Pada 300 user dengan ramp 200, sistem tidak mampu menampung lonjakan dan mengalami 73% failure.
 
-![Skenario 4 - 300 Users]()
+<img width="574" height="387" alt="s4 - 300" src="https://github.com/user-attachments/assets/c00dceb6-ea15-44c0-b2b7-ff942e512acf" />
+
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -749,14 +720,15 @@ Skenario paling ekstrem — seluruh user masuk hampir serentak (ramp 500 user/de
 
 **User: 100 | Ramp: 500**
 
-![Skenario 5 - 100 Users]()
+<img width="572" height="390" alt="s5 - 100" src="https://github.com/user-attachments/assets/50d25339-e3ba-4e3a-8518-5f4cd44738d7" />
+
 
 **User: 200 | Ramp: 500**
 
 Pada ramp 500, bahkan 200 user sudah menyebabkan kegagalan karena sistem tidak punya waktu untuk mendistribusikan koneksi secara merata.
 
+<img width="575" height="386" alt="s5 - 200" src="https://github.com/user-attachments/assets/2ea4e9b4-2272-4145-a015-a9ab357dafad" />
 
-![Skenario 5 - 200 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -765,24 +737,6 @@ Pada ramp 500, bahkan 200 user sudah menyebabkan kegagalan karena sistem tidak p
 
 Kesimpulan
 Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100 users**
-
-### Screenshot
-
-- Statistics
-
-![Statistics]()
-
-- Charts
-
-![Charts]()
-
-- RPS
-
-![RPS]()
-
-- Failure
-
-![Failure]()
 
 ### Ringkasan Hasil Load Testing
 
@@ -793,8 +747,6 @@ Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%
 | 3 (Peak Concurrency) | Ramp 100 | **100 users** (failure 0%) |
 | 4 (Peak Concurrency) | Ramp 200 | **200 users** (failure 0%) |
 | 5 (Peak Concurrency) | Ramp 500 | **100 users** (failure 0%) |
-
-> **Catatan Penilaian RPS:** Nilai = (83.2 / 200) × 30 = **12.48 poin**
 
 Dari hasil di atas terlihat bahwa **ramp rate sangat mempengaruhi kapasitas sistem**. Semakin agresif ramp rate, semakin rendah jumlah user yang dapat dilayani tanpa kegagalan. Ini menunjukkan bahwa sistem cukup stabil saat traffic naik perlahan, namun perlu optimasi tambahan (seperti connection pooling dan pre-warming) untuk menghadapi spike traffic mendadak.
 
