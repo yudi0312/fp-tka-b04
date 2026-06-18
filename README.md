@@ -41,11 +41,13 @@ VM :
 
 ## Tugas Utama
 
-Merancang seluruh arsitektur cloud.
+Merancang seluruh arsitektur cloud yang akan digunakan tim, mencakup pemilihan jumlah VM, spesifikasi masing-masing VM, strategi load balancing, serta estimasi biaya keseluruhan agar tidak melebihi budget yang ditentukan.
 
 ## Job Desk
 
 ### 1. Menentukan Infrastruktur
+
+Infrastruktur dirancang dengan memisahkan setiap layer ke VM yang berbeda agar tidak ada resource contention antar komponen. Pemisahan ini juga memudahkan scaling secara independen jika salah satu layer mengalami bottleneck.
 
 ```
 VM1 = Nginx Load Balancer
@@ -56,10 +58,19 @@ VM4 = MongoDB
 
 ### 2. Membuat Diagram Topologi Arsitektur Cloud
 
+Diagram arsitektur dibuat menggunakan draw.io untuk menggambarkan alur request dari user hingga ke database, termasuk komponen load balancer dan dua backend server.
 
+Diagram memuat komponen:
 
+- **Client Layer**: User mengakses sistem melalui web browser
+- **Presentation Layer**: Frontend server (VM1) melayani static files
+- **Load Balancing Layer**: Nginx di VM1 mendistribusikan request API ke backend
+- **Application Layer**: Dua backend Flask (VM2 & VM3) memproses request secara paralel
+- **Data Layer**: MongoDB di VM4 menyimpan seluruh data pesanan
 
 ### 3. Cost Analysis
+
+Pemilihan spesifikasi VM disesuaikan dengan kebutuhan beban kerja masing-masing layer, sekaligus menjaga total biaya di bawah batas maksimum $75/bulan.
 
 ![Azure VM Pricing]()
 
@@ -76,7 +87,7 @@ Total:
 58,37 USD
 ```
 
-Sudah sesuai dengan requirement soal, dimana maks untuk budget VM dibawah 75 USD.
+Total biaya **$58,37/bulan**, sudah sesuai dengan requirement soal dimana budget maksimal VM adalah $75/bulan.
 
 **Alasan Pemilihan Konfigurasi:**
 
@@ -91,25 +102,35 @@ Sudah sesuai dengan requirement soal, dimana maks untuk budget VM dibawah 75 USD
 
 ## Tugas Utama
 
-Mengurus MongoDB.
+Menyiapkan dan mengelola database MongoDB di VM4, mulai dari instalasi, konfigurasi koneksi, restore data awal, pembuatan index untuk optimasi performa query, hingga monitoring kondisi database saat load testing berlangsung.
 
 ## Job Desk
 
 ### 1. Install MongoDB
 
-Ubuntu:
+MongoDB di-install di VM4 yang terpisah dari backend server. Pemisahan ini bertujuan agar resource database (CPU, RAM, I/O) tidak berkompetisi dengan proses aplikasi Flask.
 
 ```bash
 sudo apt install mongodb
 ```
+Setelah instalasi, MongoDB dijalankan sebagai service agar otomatis aktif saat VM restart:
+
+```bash
+sudo systemctl enable mongod
+sudo systemctl start mongod
+```
 
 ### 2. Restore Database
+
+Data awal di-restore dari dump yang sudah disiapkan agar collection `orders` memiliki data untuk keperluan pengujian endpoint dan load testing.
 
 ```bash
 mongorestore dump/orderdb
 ```
 
 ### 3. Verifikasi Collection
+
+Setelah restore, dilakukan verifikasi untuk memastikan database dan collection berhasil terbentuk dengan benar.
 
 ```js
 show dbs
@@ -120,6 +141,8 @@ show collections
 ```
 
 ### 4. Membuat Index
+
+Index dibuat pada field yang paling sering digunakan dalam query agar performa GET /orders dan pencarian order by ID lebih cepat, terutama saat collection sudah berisi ribuan dokumen.
 
 ```js
 db.orders.createIndex({order_id: 1})
@@ -132,6 +155,8 @@ db.orders.createIndex({created_at: -1})
 Index pada `order_id` dan `created_at` mempercepat query history dan pencarian order secara signifikan.
 
 ### 5. Monitoring MongoDB
+
+Selama load testing berlangsung, kondisi MongoDB dipantau menggunakan `mongostat` untuk memastikan tidak ada bottleneck di sisi database.
 
 ```bash
 mongostat
@@ -172,11 +197,13 @@ Resources/BE
 
 ## Tugas Utama
 
-Deploy Flask API.
+Men-deploy aplikasi Flask REST API di VM2 dan VM3, mengkonfigurasi Gunicorn sebagai WSGI server produksi, serta memastikan seluruh endpoint berjalan dengan benar dan dapat terhubung ke MongoDB di VM4.
 
 ## Job Desk
 
 ### 1. Install Dependency
+
+Seluruh dependency Python yang dibutuhkan aplikasi Flask di-install dari file `requirements.txt` yang sudah disediakan di repository.
 
 ```bash
 pip install -r requirements.txt
@@ -184,17 +211,23 @@ pip install -r requirements.txt
 
 ### 2. Menjalankan Flask
 
+Untuk keperluan testing awal, Flask dijalankan langsung dengan development server:
+
 ```bash
 python app.py
 ```
 
 ### 3. Setup Gunicorn
 
+Untuk environment produksi, Flask dijalankan menggunakan Gunicorn dengan 4 worker process. Gunicorn dipilih karena mampu menangani multiple concurrent request secara efisien dibanding Flask development server yang single-threaded.
+
 ```bash
 gunicorn -w 4 -b 0.0.0.0:5000 app:app
 ```
 
 ### 4. Endpoint Testing
+
+Seluruh endpoint diuji langsung dari VM backend menggunakan `curl` sebelum diintegrasikan dengan Load Balancer.
 
 Test:
 
@@ -373,17 +406,22 @@ Resources/FE
 
 ## Tugas Utama
 
-Deploy frontend.
+Men-deploy tampilan antarmuka frontend yang disediakan di repository ke VM1, mengkonfigurasi Nginx agar dapat menyajikan static file, serta memastikan frontend dapat terhubung dan berkomunikasi dengan backend melalui Load Balancer.
 
 ## Job Desk
 
 ### 1. Install Nginx
+
+Nginx di-install di VM1 untuk berfungsi sebagai web server yang menyajikan halaman frontend statis kepada user.
+
 
 ```bash
 sudo apt install nginx
 ```
 
 ### 2. Hosting Frontend
+
+File frontend yang disediakan di repository (`index.html` dan `styles.css`) di-copy ke direktori default Nginx agar dapat diakses melalui browser.
 
 Copy:
 
@@ -400,15 +438,15 @@ ke
 
 ### 3. Konfigurasi API URL
 
-Sesuaikan URL backend.
+URL backend di dalam file frontend disesuaikan agar mengarah ke Load Balancer, bukan langsung ke salah satu backend. Ini memastikan seluruh request API dari frontend ikut melewati proses load balancing.
 
 ### 4. Integrasi Frontend ↔ Backend
 
-Test:
+Setelah deployment, dilakukan pengujian fungsionalitas antarmuka secara end-to-end:
 
-- Create Order
-- View History
-- Check Status
+- **Create Order** — Form pembuatan pesanan berhasil mengirim request ke backend dan menampilkan response
+- **View History** — Halaman riwayat pesanan berhasil menampilkan data dari endpoint GET /orders
+- **Check Status** — Pencarian status pesanan berdasarkan order_id berjalan dengan benar
 
 ### Screenshot
 
@@ -427,11 +465,13 @@ Test:
 
 ## Tugas Utama
 
-Mengatur scaling dan load balancing.
+Mengonfigurasi Nginx di VM1 sebagai Load Balancer yang mendistribusikan request API ke dua backend server (VM2 dan VM3), memastikan request terbagi secara merata, serta melakukan verifikasi distribusi traffic melalui log Nginx.
 
 ## Job Desk
 
 ### 1. Install Nginx Load Balancer
+
+Nginx dikonfigurasi menggunakan strategi **Least Connection** (`least_conn`) yang akan mengarahkan setiap request baru ke backend dengan jumlah koneksi aktif paling sedikit. Strategi ini lebih optimal dibanding round-robin sederhana karena mempertimbangkan beban aktual masing-masing backend.
 
 Konfigurasi:
 
@@ -444,6 +484,8 @@ upstream backend_cluster {
 ```
 
 ### 2. Reverse Proxy
+
+Nginx di VM1 dikonfigurasi untuk melayani dua fungsi sekaligus: menyajikan frontend statis dan meneruskan request API ke backend cluster.
 
 ```nginx
 server {
@@ -481,6 +523,8 @@ server {
 ```
 
 ### 3. Aktivasi Config
+
+Config Load Balancer diaktifkan dengan membuat symlink ke `sites-enabled`, kemudian default config Nginx dihapus untuk menghindari konflik.
 
 ```bash
 # Enable config
@@ -545,11 +589,13 @@ Resources/Test
 
 ## Tugas Utama
 
-Locust Testing.
+Melakukan load testing menggunakan Locust untuk mengukur performa sistem secara keseluruhan, mencakup pencarian RPS (Request Per Second) tertinggi dengan failure 0% dan jumlah concurrent user maksimum yang dapat dilayani tanpa kegagalan pada berbagai konfigurasi ramp rate.
 
 ## Job Desk
 
 ### 1. Setup Locust
+
+Locust di-install di mesin terpisah (bukan di VM cloud) agar proses load testing tidak mengkonsumsi resource VM yang sedang diuji.
 
 ```bash
 pip install locust
@@ -558,6 +604,7 @@ pip install locust
 
 sudo apt install python3-locust
 ```
+Locust dijalankan dengan locustfile yang sudah disiapkan, mengarah ke IP Load Balancer sebagai target:
 
 ```bash
 cd /mnt/d/ITS/4\ TKA/fp-tka-b04/Resources/Test
@@ -565,13 +612,13 @@ cd /mnt/d/ITS/4\ TKA/fp-tka-b04/Resources/Test
 locust -f locustfile_order.py --host=http://20.244.87.0
 ```
 
-buka http://localhost:8089/
+Buka dashboard Locust di browser: http://localhost:8089/
 
 ![Locust UI]()
 
 ### Skenario 1
 
-Maximum RPS. Durasi: 60 detik
+Tujuan skenario ini adalah mencari nilai **RPS (Request Per Second) tertinggi** yang dapat dicapai sistem dengan **tingkat kegagalan 0%**. Pengujian dilakukan dengan menaikkan jumlah user secara bertahap menggunakan ramp rate 10 user/detik.
 
 **User: 50 | Ramp: 10**
 
@@ -587,6 +634,10 @@ Maximum RPS. Durasi: 60 detik
 
 **User: 200 | Ramp: 10**
 
+
+Pada 200 user, sistem mulai mengalami kegagalan sehingga angka ini tidak dipakai sebagai hasil akhir.
+
+
 ![Skenario 1 - 200 Users Stats]()
 
 ![Skenario 1 - 200 Users Chart]()
@@ -599,11 +650,15 @@ Maximum RPS. Durasi: 60 detik
 |-----|-------|------|-----|---------|
 | #1 | 50 | 10 | ~55.5 | 0% |
 | #2 | 100 | 10 | ~83.2 | 0% |
-| #3 | 200 | 10 | ~191.3 | 45% ❌ |
+| #3 | 200 | 10 | ~191.3 | 45% |
+
+**Rata-rata RPS tertinggi dengan tingkat kegagalan 0%: 83.2 RPS**
 
 ---
 
 ### Skenario 2
+
+Tujuan skenario ini adalah mencari jumlah **concurrent user tertinggi** yang masih dapat dilayani sistem dengan **failure 0%**, menggunakan ramp rate 50 user/detik.
 
 **User: 100 | Ramp: 50**
 
@@ -619,21 +674,25 @@ Maximum RPS. Durasi: 60 detik
 
 **User: 400 | Ramp: 50**
 
+Pada 400 user, sistem mulai mengalami kegagalan sebesar 57%, menandakan batas kapasitas terlampaui.
+
 ![Skenario 2 - 400 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
-| #1 | 100 | 50 | 0% ✅ |
-| #2 | 200 | 50 | 0% ✅ |
-| #3 | 300 | 50 | 0% ✅ |
-| #4 | 400 | 50 | 57% ❌ |
+| #1 | 100 | 50 | 0% |
+| #2 | 200 | 50 | 0% |
+| #3 | 300 | 50 | 0% |
+| #4 | 400 | 50 | 57% |
 
 Kesimpulan
-Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **300**
+Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **300 users**
 
 ---
 
 ### Skenario 3
+
+Pengujian diulang dengan ramp rate lebih agresif (100 user/detik) untuk melihat apakah sistem tetap stabil saat jumlah user naik lebih cepat.
 
 **User: 100 | Ramp: 100**
 
@@ -641,19 +700,23 @@ Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%
 
 **User: 200 | Ramp: 100**
 
+Pada ramp 100, sistem sudah gagal di 200 user karena koneksi datang terlalu cepat sebelum backend sempat warm up.
+
 ![Skenario 3 - 200 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
-| #1 | 100 | 100 | 0% ✅ |
-| #2 | 200 | 100 | 98% ❌ |
+| #1 | 100 | 100 | 0% |
+| #2 | 200 | 100 | 98% |
 
 Kesimpulan
-Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100**
+Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100 users**
 
 ---
 
 ### Skenario 4
+
+Ramp rate dinaikkan ke 200 user/detik untuk mensimulasikan lonjakan traffic mendadak seperti saat flash sale.
 
 **User: 100 | Ramp: 200**
 
@@ -665,20 +728,24 @@ Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%
 
 **User: 300 | Ramp: 200**
 
+Pada 300 user dengan ramp 200, sistem tidak mampu menampung lonjakan dan mengalami 73% failure.
+
 ![Skenario 4 - 300 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
-| #1 | 100 | 200 | 0% ✅ |
-| #2 | 200 | 200 | 0% ✅ |
-| #3 | 300 | 200 | 73% ❌ |
+| #1 | 100 | 200 | 0% |
+| #2 | 200 | 200 | 0% |
+| #3 | 300 | 200 | 73% |
 
 Kesimpulan
-Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **200**
+Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **200 users**
 
 ---
 
 ### Skenario 5
+
+Skenario paling ekstrem — seluruh user masuk hampir serentak (ramp 500 user/detik) untuk mengukur ketahanan sistem terhadap spike traffic yang sangat tiba-tiba.
 
 **User: 100 | Ramp: 500**
 
@@ -686,15 +753,18 @@ Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%
 
 **User: 200 | Ramp: 500**
 
+Pada ramp 500, bahkan 200 user sudah menyebabkan kegagalan karena sistem tidak punya waktu untuk mendistribusikan koneksi secara merata.
+
+
 ![Skenario 5 - 200 Users]()
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
-| #1 | 100 | 500 | 0% ✅ |
-| #2 | 200 | 500 | 10% ❌ |
+| #1 | 100 | 500 | 0% |
+| #2 | 200 | 500 | 10% |
 
 Kesimpulan
-Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100**
+Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100 users**
 
 ### Screenshot
 
@@ -718,13 +788,15 @@ Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%
 
 | Skenario | Konfigurasi | Hasil |
 |----------|-------------|-------|
-| 1 — Max RPS | Ramp 10, escalating users | **83.2 RPS** (failure 0%) |
-| 2 — Peak Concurrency | Ramp 50 | **300 users** (failure 0%) |
-| 3 — Peak Concurrency | Ramp 100 | **100 users** (failure 0%) |
-| 4 — Peak Concurrency | Ramp 200 | **200 users** (failure 0%) |
-| 5 — Peak Concurrency | Ramp 500 | **100 users** (failure 0%) |
+| 1 (Max RPS) | Ramp 10, escalating users | **83.2 RPS** (failure 0%) |
+| 2 (Peak Concurrency) | Ramp 50 | **300 users** (failure 0%) |
+| 3 (Peak Concurrency) | Ramp 100 | **100 users** (failure 0%) |
+| 4 (Peak Concurrency) | Ramp 200 | **200 users** (failure 0%) |
+| 5 (Peak Concurrency) | Ramp 500 | **100 users** (failure 0%) |
 
 > **Catatan Penilaian RPS:** Nilai = (83.2 / 200) × 30 = **12.48 poin**
+
+Dari hasil di atas terlihat bahwa **ramp rate sangat mempengaruhi kapasitas sistem**. Semakin agresif ramp rate, semakin rendah jumlah user yang dapat dilayani tanpa kegagalan. Ini menunjukkan bahwa sistem cukup stabil saat traffic naik perlahan, namun perlu optimasi tambahan (seperti connection pooling dan pre-warming) untuk menghadapi spike traffic mendadak.
 
 ---
 
@@ -733,7 +805,7 @@ Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%
 
 ## Tugas Utama
 
-Mengumpulkan seluruh hasil dan membuat laporan.
+Memantau penggunaan resource (CPU dan RAM) di seluruh VM selama load testing berlangsung untuk mengidentifikasi bottleneck, serta mengumpulkan seluruh hasil pengerjaan anggota tim dan menyusunnya menjadi laporan README yang lengkap dan terstruktur.
 
 ## Job Desk
 
@@ -815,10 +887,10 @@ Conclusion
 
 Arsitektur cloud yang dirancang berhasil memenuhi seluruh requirement final project:
 
-1. **Budget terkendali** — Total biaya $58,37/bulan, di bawah batas maksimum $75/bulan.
-2. **Skalabilitas horizontal** — Dua backend server (VM2 & VM3) dengan Nginx Load Balancer strategi Least Connection terbukti mendistribusikan traffic secara merata, dibuktikan dari log Nginx yang mencatat request masuk ke Backend 1 dan Backend 2.
-3. **Performa stabil** — Sistem mampu menangani hingga **300 concurrent users** dengan 0% failure (Skenario 2, Ramp 50), dan mencapai maksimum **83.2 RPS** tanpa error (Skenario 1).
-4. **Database terpisah** — MongoDB di VM terpisah (VM4) meningkatkan performa query dan mencegah resource contention dengan backend.
-5. **Index MongoDB** — Index pada `order_id` dan `created_at` mengoptimalkan kecepatan query `GET /orders` secara signifikan.
+1. **Budget terkendali**: Total biaya $58,37/bulan, di bawah batas maksimum $75/bulan.
+2. **Skalabilitas horizontal**: Dua backend server (VM2 & VM3) dengan Nginx Load Balancer strategi Least Connection terbukti mendistribusikan traffic secara merata, dibuktikan dari log Nginx yang mencatat request masuk ke Backend 1 dan Backend 2.
+3. **Performa stabil**: Sistem mampu menangani hingga **300 concurrent users** dengan 0% failure (Skenario 2, Ramp 50), dan mencapai maksimum **83.2 RPS** tanpa error (Skenario 1).
+4. **Database terpisah**: MongoDB di VM terpisah (VM4) meningkatkan performa query dan mencegah resource contention dengan backend.
+5. **Index MongoDB**: Index pada `order_id` dan `created_at` mengoptimalkan kecepatan query `GET /orders` secara signifikan.
 
-Bottleneck utama yang ditemukan adalah pada ramp rate tinggi (100+) — sistem tidak sempat warm up sehingga terjadi spike failure sementara. Rekomendasi ke depan: tambah jumlah Gunicorn worker dan implementasikan connection pooling MongoDB yang lebih agresif.
+**Analisis bottleneck:** Dari hasil load testing, terlihat bahwa ramp rate sangat mempengaruhi stabilitas sistem. Pada ramp rate tinggi (100+), sistem mengalami spike failure karena backend tidak sempat mendistribusikan koneksi sebelum gelombang request berikutnya tiba. Ini mengindikasikan bahwa bottleneck utama ada di kapasitas connection handling Gunicorn, bukan di MongoDB.
