@@ -15,9 +15,13 @@
 
 # FINAL PROJECT TEKNOLOGI KOMPUTASI AWAN 2026
 
-https://github.com/yudi0312/fp-tka-b04
+## Introduction
 
-Topologi : https://drive.google.com/file/d/1RfMo5t2PSoYrXnEonhq5ToWT8Ue0aepz/view?usp=sharing
+Proyek ini merupakan implementasi **Order Processing Service** berbasis cloud untuk platform e-commerce. Layanan ini menangani pembuatan pesanan, pengecekan status, dan riwayat transaksi menggunakan REST API berbasis **Python (Flask)** dengan database **MongoDB**, yang di-deploy di atas infrastruktur cloud Azure.
+
+Arsitektur dirancang untuk mampu menangani lonjakan traffic (flash sale, promo, dsb.) secara andal dan efisien dengan budget maksimal **75 USD/bulan**.
+
+## Spesifikasi VM
 
 VM :
 
@@ -28,29 +32,18 @@ VM :
 | VM3 | backend-2 | Flask + Gunicorn | 2 vCPU | 4 GB | ssh VM3@40.81.233.30 | Tka1234567890 |
 | VM4 | mongodb | MongoDB Server | 2 vCPU | 4 GB | ssh VM4@4.240.118.65 | Tka1234567890 |
 
-## Struktur Tim 7 Orang
-
-| Anggota | Role | Fokus Penilaian | Nama |
-|---------|------|-----------------|------|
-| 1 | Cloud Architect & Team Lead | Arsitektur Cloud (20%) | Yudi |
-| 2 | Database Engineer | Implementasi (20%) | Kaka |
-| 3 | Backend Engineer | Implementasi (20%) | Obi |
-| 4 | Frontend & Web Server Engineer | Implementasi (20%) | Tiara |
-| 5 | DevOps & Load Balancer Engineer | Arsitektur + Implementasi | Aslam |
-| 6 | Performance Testing Engineer | Load Testing (35%) | Diva |
-| 7 | Monitoring & Documentation Engineer | Dokumentasi (25%) | Clara |
-
 ---
 
-# ANGGOTA
+# IMPLEMENTASI
 
-# Cloud Architect & Team Lead
+# 1. Cloud Architect & Team Lead
+### Putu Yudi Nandanjaya - 5027241080 
 
 ## Tugas Utama
 
 Merancang seluruh arsitektur cloud.
 
-## Yang Dikerjakan
+## Job Desk
 
 ### 1. Menentukan Infrastruktur
 
@@ -61,17 +54,10 @@ VM3 = Backend Flask 2
 VM4 = MongoDB
 ```
 
-### 2. Membuat Diagram Draw.io
+### 2. Membuat Diagram Topologi Arsitektur Cloud
 
-![Topologi Arsitektur Cloud]()
 
-Diagram wajib memuat:
 
-- User
-- Load Balancer
-- Backend
-- MongoDB
-- Frontend
 
 ### 3. Cost Analysis
 
@@ -94,36 +80,22 @@ Sudah sesuai dengan requirement soal, dimana maks untuk budget VM dibawah 75 USD
 
 **Alasan Pemilihan Konfigurasi:**
 
-- **VM1 (1 vCPU, 1 GB)** — Cukup untuk Nginx yang hanya meneruskan request (tidak memproses logika bisnis). Spec kecil menekan biaya.
-- **VM2 & VM3 (2 vCPU, 4 GB)** — Backend Flask + Gunicorn membutuhkan lebih banyak resource untuk menangani concurrent request. Dua instance memungkinkan horizontal scaling.
-- **VM4 (2 vCPU, 4 GB)** — MongoDB dipisahkan dari app server untuk performa query yang lebih stabil dan tidak berkompetisi resource dengan backend.
-- **Load Balancing Least Connection** — Lebih optimal dari round-robin karena mendistribusikan request ke backend dengan koneksi aktif paling sedikit, ideal saat beban tidak merata.
+- **VM1 (1 vCPU, 1 GB)**: Cukup untuk Nginx yang hanya meneruskan request (tidak memproses logika bisnis). Spec kecil menekan biaya.
+- **VM2 & VM3 (2 vCPU, 4 GB)**: Backend Flask + Gunicorn membutuhkan lebih banyak resource untuk menangani concurrent request. Dua instance memungkinkan horizontal scaling.
+- **VM4 (2 vCPU, 4 GB)**: MongoDB dipisahkan dari app server untuk performa query yang lebih stabil dan tidak berkompetisi resource dengan backend.
+- **Load Balancing Least Connection**: Lebih optimal dari round-robin karena mendistribusikan request ke backend dengan koneksi aktif paling sedikit, ideal saat beban tidak merata.
 
-### 4. Mengatur Timeline Tim
 
-Membagi pekerjaan dan memastikan integrasi.
-
----
-
-# ANGGOTA 2
-
-# Database Engineer
-
-check : https://github.com/yudi0312/fp-tka-b04/tree/main/Resources/DB
-
-Folder:
-
-```
-Resources/DB
-```
+# 2. Database Engineer
+###  I Gede Bagus Saka - 5027241088 
 
 ## Tugas Utama
 
 Mengurus MongoDB.
 
-## Yang Dikerjakan
+## Job Desk
 
-### Install MongoDB
+### 1. Install MongoDB
 
 Ubuntu:
 
@@ -131,13 +103,13 @@ Ubuntu:
 sudo apt install mongodb
 ```
 
-### Restore Database
+### 2. Restore Database
 
 ```bash
 mongorestore dump/orderdb
 ```
 
-### Verifikasi Collection
+### 3. Verifikasi Collection
 
 ```js
 show dbs
@@ -147,7 +119,7 @@ use orderdb
 show collections
 ```
 
-### Membuat Index
+### 4. Membuat Index
 
 ```js
 db.orders.createIndex({order_id: 1})
@@ -159,7 +131,7 @@ db.orders.createIndex({created_at: -1})
 
 Index pada `order_id` dan `created_at` mempercepat query history dan pencarian order secara signifikan.
 
-### Monitoring MongoDB
+### 5. Monitoring MongoDB
 
 ```bash
 mongostat
@@ -189,9 +161,8 @@ mongostat
 
 ---
 
-# ANGGOTA 3
-
-# Backend Engineer
+# 3. Backend Engineer
+### Muhammad Fatihul Qolbi - 5027241023 
 
 Folder:
 
@@ -203,27 +174,27 @@ Resources/BE
 
 Deploy Flask API.
 
-## Yang Dikerjakan
+## Job Desk
 
-### Install Dependency
+### 1. Install Dependency
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Menjalankan Flask
+### 2. Menjalankan Flask
 
 ```bash
 python app.py
 ```
 
-### Setup Gunicorn
+### 3. Setup Gunicorn
 
 ```bash
 gunicorn -w 4 -b 0.0.0.0:5000 app:app
 ```
 
-### Endpoint Testing
+### 4. Endpoint Testing
 
 Test:
 
@@ -389,21 +360,10 @@ Response:
 }
 ```
 
-### Notes untuk Frontend
-
-**Catatan integrasi:**
-
-Frontend cukup arahkan API URL ke:
-
-```js
-const API_BASE_URL = "http://20.207.194.140:5000";
-```
-
 ---
 
-# ANGGOTA 4
-
-# Frontend & Web Server Engineer
+# 4. Frontend & Web Server Engineer
+### Tiara Putri Prasetya - 5027241013
 
 Folder:
 
@@ -415,15 +375,15 @@ Resources/FE
 
 Deploy frontend.
 
-## Yang Dikerjakan
+## Job Desk
 
-### Install Nginx
+### 1. Install Nginx
 
 ```bash
 sudo apt install nginx
 ```
 
-### Hosting Frontend
+### 2. Hosting Frontend
 
 Copy:
 
@@ -438,11 +398,11 @@ ke
 /var/www/html
 ```
 
-### Konfigurasi API URL
+### 3. Konfigurasi API URL
 
 Sesuaikan URL backend.
 
-### Integrasi Frontend ↔ Backend
+### 4. Integrasi Frontend ↔ Backend
 
 Test:
 
@@ -462,17 +422,16 @@ Test:
 
 ---
 
-# ANGGOTA 5
-
-# DevOps & Load Balancer Engineer
+# 5. DevOps & Load Balancer Engineer
+###  Aslam Ahmad Usman - 5027241074 |
 
 ## Tugas Utama
 
 Mengatur scaling dan load balancing.
 
-## Yang Dikerjakan
+## Job Desk
 
-### Install Nginx Load Balancer
+### 1. Install Nginx Load Balancer
 
 Konfigurasi:
 
@@ -484,7 +443,7 @@ upstream backend_cluster {
 }
 ```
 
-### Reverse Proxy
+### 2. Reverse Proxy
 
 ```nginx
 server {
@@ -521,7 +480,7 @@ server {
 }
 ```
 
-### Aktivasi Config
+### 3. Aktivasi Config
 
 ```bash
 # Enable config
@@ -536,15 +495,6 @@ sudo nginx -t
 # Kalau berhasil reload
 sudo systemctl reload nginx
 sudo systemctl enable nginx
-```
-
-### Docker (Opsional)
-
-Buat:
-
-```
-Dockerfile
-docker-compose.yml
 ```
 
 ### Testing Load Balancer
@@ -584,9 +534,8 @@ TKA-Backend2 gunicorn[871]:   20.244.87.0 -- [18/Jun/2026:16:27:06] "GET /orders
 
 ---
 
-# ANGGOTA 6
-
 # Performance Testing Engineer
+### Mutiara Diva Jaladitha - 5027241083
 
 Folder:
 
@@ -598,9 +547,9 @@ Resources/Test
 
 Locust Testing.
 
-## Yang Dikerjakan
+## Job Desk
 
-### Setup Locust
+### 1. Setup Locust
 
 ```bash
 pip install locust
@@ -779,15 +728,14 @@ Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%
 
 ---
 
-# ANGGOTA 7
-
-# Monitoring & Documentation Engineer
+# 7. Monitoring & Documentation Engineer
+### Clarissa Aydin Rahmazea - 5027241014
 
 ## Tugas Utama
 
 Mengumpulkan seluruh hasil dan membuat laporan.
 
-## Yang Dikerjakan
+## Job Desk
 
 ### Monitoring Resource
 
