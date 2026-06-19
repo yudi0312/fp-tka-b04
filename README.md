@@ -571,7 +571,7 @@ Locust dijalankan dengan locustfile yang sudah disiapkan, mengarah ke IP Load Ba
 ```bash
 cd /mnt/d/ITS/4\ TKA/fp-tka-b04/Resources/Test
 
-locust -f locustfile_order.py --host=http://20.244.87.0
+locust -f locustfile.py --host=http://20.244.87.0
 ```
 
 Buka dashboard Locust di browser: http://localhost:8089/
