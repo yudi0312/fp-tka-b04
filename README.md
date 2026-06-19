@@ -415,18 +415,27 @@ Setelah deployment, dilakukan pengujian fungsionalitas antarmuka secara end-to-e
 
 ### Screenshot
 
-- Frontend berjalan
+- Buat pesanan baru
 
-![Frontend Berjalan]()
+<img width="1600" height="895" alt="buat pesanan baru" src="https://github.com/user-attachments/assets/ed9e558e-3f57-4f60-9c6f-1fd900f28abe" />
 
-- Frontend terhubung API
 
-![Frontend Terhubung API]()
+- Cek status pesanan
+
+<img width="1600" height="890" alt="WhatsApp Image 2026-06-19 at 11 56 32" src="https://github.com/user-attachments/assets/56a9e109-b796-40e1-9d25-8c760d86faea" />
+
+- Update status pesanan
+
+<img width="1600" height="883" alt="WhatsApp Image 2026-06-19 at 11 56 32 (1)" src="https://github.com/user-attachments/assets/5127a957-8c30-42da-9041-5806933999f1" />
+
+- Riwayat pesanan
+
+<img width="1600" height="640" alt="WhatsApp Image 2026-06-19 at 11 56 32 (2)" src="https://github.com/user-attachments/assets/1ca76c4f-c7a7-419e-bf6d-3c19db5a46d7" />
 
 ---
 
 # 5. DevOps & Load Balancer Engineer
-###  Aslam Ahmad Usman - 5027241074 |
+###  Aslam Ahmad Usman - 5027241074 
 
 ## Tugas Utama
 
@@ -597,8 +606,6 @@ Tujuan skenario ini adalah mencari nilai **RPS (Request Per Second) tertinggi** 
 
 Pada 200 user, sistem mulai mengalami kegagalan sehingga angka ini tidak dipakai sebagai hasil akhir.
 
-**Rata-rata RPS** tertinggi dengan tingkat kegagalan 0%: **83.2 RPS**
-
 | Run | Users | Ramp | RPS | Failure |
 |-----|-------|------|-----|---------|
 | #1 | 50 | 10 | ~59.2 | 0% |
@@ -759,57 +766,9 @@ docker stats
 
 <img width="390" height="324" alt="image" src="https://github.com/user-attachments/assets/2cffcd50-9360-45f0-a03a-ff2e410ae693" />
 
-Untuk setiap skenario:
-
-- CPU usage & RAM usage — Skenario 1
-
-![Monitor Skenario 1]()
-
-- CPU usage & RAM usage — Skenario 2
-
-![Monitor Skenario 2]()
-
-- CPU usage & RAM usage — Skenario 3
-
-![Monitor Skenario 3]()
-
-- CPU usage & RAM usage — Skenario 4
-
-![Monitor Skenario 4]()
-
-- CPU usage & RAM usage — Skenario 5
-
-![Monitor Skenario 5]()
+<img width="390" height="323" alt="WhatsApp Image 2026-06-19 at 13 07 57" src="https://github.com/user-attachments/assets/7b69f960-1dca-4c34-9742-5dd2d728bbbc" />
 
 ### Menulis README
-
-Bagian:
-
-```
-Introduction
-```
-
-```
-Architecture
-```
-
-```
-Implementation
-```
-
-```
-Endpoint Testing
-```
-
-```
-Load Testing
-```
-
-```
-Conclusion
-```
-
----
 
 ## Conclusion
 
