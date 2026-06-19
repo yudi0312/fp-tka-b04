@@ -417,20 +417,22 @@ Setelah deployment, dilakukan pengujian fungsionalitas antarmuka secara end-to-e
 
 - Buat pesanan baru
 
-<img width="1600" height="895" alt="buat pesanan baru" src="https://github.com/user-attachments/assets/ed9e558e-3f57-4f60-9c6f-1fd900f28abe" />
+<img width="1600" height="794" alt="WhatsApp Image 2026-06-19 at 13 54 28" src="https://github.com/user-attachments/assets/752c7553-6367-4312-a69e-43fdb24e6a61" />
 
 
 - Cek status pesanan
 
-<img width="1600" height="890" alt="WhatsApp Image 2026-06-19 at 11 56 32" src="https://github.com/user-attachments/assets/56a9e109-b796-40e1-9d25-8c760d86faea" />
+<img width="1503" height="664" alt="WhatsApp Image 2026-06-19 at 13 54 28 (1)" src="https://github.com/user-attachments/assets/795a6737-d832-4046-82fe-bd4f54405b05" />
+
 
 - Update status pesanan
 
-<img width="1600" height="883" alt="WhatsApp Image 2026-06-19 at 11 56 32 (1)" src="https://github.com/user-attachments/assets/5127a957-8c30-42da-9041-5806933999f1" />
+<img width="1381" height="568" alt="WhatsApp Image 2026-06-19 at 13 54 28 (2)" src="https://github.com/user-attachments/assets/3a90b181-d277-4dab-a7c4-f28e68a52efb" />
+
 
 - Riwayat pesanan
 
-<img width="1600" height="640" alt="WhatsApp Image 2026-06-19 at 11 56 32 (2)" src="https://github.com/user-attachments/assets/1ca76c4f-c7a7-419e-bf6d-3c19db5a46d7" />
+<img width="1372" height="634" alt="WhatsApp Image 2026-06-19 at 13 54 29" src="https://github.com/user-attachments/assets/ab0b1aab-7111-4fea-bba4-cf0699457e3b" />
 
 ---
 
