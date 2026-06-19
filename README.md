@@ -634,14 +634,13 @@ Tujuan skenario ini adalah mencari jumlah **concurrent user tertinggi** yang mas
 
 <img width="572" height="394" alt="image" src="https://github.com/user-attachments/assets/20e1ee88-a53c-4369-9a21-d464d9a5bc54" />
 
-Pada 300 user, sistem mulai mengalami kegagalan sebesar 57%, menandakan batas kapasitas terlampaui.
+Pada 300 user, sistem mulai mengalami kegagalan sebesar 50%, menandakan batas kapasitas terlampaui.
 
-| Run | Users | Ramp | Failure |
-|-----|-------|------|---------|
-| #1 | 100 | 50 | 0% |
-| #2 | 200 | 50 | 0% |
-| #3 | 300 | 50 | 0% |
-| #4 | 400 | 50 | 57% |
+| Run | Users | Ramp | RPS | Failure |
+|-----|-------|------|-----|---------|
+| #1 | 100 | 50 | ~116 | 0% |
+| #2 | 200 | 50 | ~37 | 0% |
+| #3 | 300 | 50 | ~296.8 | 50% |
 
 Kesimpulan
 Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **300 users**
@@ -662,10 +661,10 @@ Pengujian diulang dengan ramp rate lebih agresif (100 user/detik) untuk melihat 
 
 Pada ramp 100, sistem sudah gagal di 200 user karena koneksi datang terlalu cepat sebelum backend sempat warm up.
 
-| Run | Users | Ramp | Failure |
-|-----|-------|------|---------|
-| #1 | 100 | 100 | 0% |
-| #2 | 200 | 100 | 98% |
+| Run | Users | Ramp | RPS | Failure |
+|-----|-------|------|-----|---------|
+| #1 | 100 | 100 | ~117.6 | 0% |
+| #2 | 200 | 100 | ~225.2 | 31% |
 
 Kesimpulan
 Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100 users**
@@ -686,11 +685,10 @@ Ramp rate dinaikkan ke 200 user/detik untuk mensimulasikan lonjakan traffic mend
 
 Pada 300 user dengan ramp 200, sistem tidak mampu menampung lonjakan dan mengalami 73% failure.
 
-| Run | Users | Ramp | Failure |
-|-----|-------|------|---------|
-| #1 | 100 | 200 | 0% |
-| #2 | 200 | 200 | 0% |
-| #3 | 300 | 200 | 73% |
+| Run | Users | Ramp | RPS | Failure |
+|-----|-------|------|-----|---------|
+| #1 | 100 | 200 | ~72.4 | 0% |
+| #2 | 200 | 100 | ~235 | 47% |
 
 Kesimpulan
 Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **200 users**
@@ -711,12 +709,10 @@ Skenario paling ekstrem — seluruh user masuk hampir serentak (ramp 500 user/de
 
 Pada ramp 500, bahkan 200 user sudah menyebabkan kegagalan karena sistem tidak punya waktu untuk mendistribusikan koneksi secara merata.
 
-
-
-| Run | Users | Ramp | Failure |
-|-----|-------|------|---------|
-| #1 | 100 | 500 | 0% |
-| #2 | 200 | 500 | 10% |
+| Run | Users | Ramp | RPS | Failure |
+|-----|-------|------|-----|---------|
+| #1 | 100 | 500 | ~78.4 | 0% |
+| #2 | 200 | 500 | ~230.1 | 65% |
 
 Kesimpulan
 Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%: **100 users**
