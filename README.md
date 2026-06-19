@@ -601,11 +601,11 @@ Pada 200 user, sistem mulai mengalami kegagalan sehingga angka ini tidak dipakai
 
 | Run | Users | Ramp | RPS | Failure |
 |-----|-------|------|-----|---------|
-| #1 | 50 | 10 | ~55.5 | 0% |
-| #2 | 100 | 10 | ~83.2 | 0% |
-| #3 | 200 | 10 | ~191.3 | 45% |
+| #1 | 50 | 10 | ~59.2 | 0% |
+| #2 | 100 | 10 | ~116.3 | 0% |
+| #3 | 200 | 10 | ~223.6 | 40% |
 
-**Rata-rata RPS tertinggi dengan tingkat kegagalan 0%: 83.2 RPS**
+**Rata-rata RPS tertinggi dengan tingkat kegagalan 0%: 116.3 RPS**
 
 ---
 
