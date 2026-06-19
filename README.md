@@ -55,7 +55,7 @@ VM4 = MongoDB
 
 Diagram arsitektur dibuat menggunakan draw.io untuk menggambarkan alur request dari user hingga ke database, termasuk komponen load balancer dan dua backend server.
 
-<img width="575" height="790" alt="topologi1" src="https://github.com/user-attachments/assets/ed0de35f-6818-46a3-be20-372cea7072a5" />
+<img width="574" height="790" alt="image" src="https://github.com/user-attachments/assets/6b9a0705-063d-4f77-b36a-eb4d7c2e8926" />
 
 Diagram memuat komponen:
 
@@ -585,27 +585,17 @@ Tujuan skenario ini adalah mencari nilai **RPS (Request Per Second) tertinggi** 
 
 **User: 50 | Ramp: 10**
 
-![Skenario 1 - 50 Users Stats]()
-
-![Skenario 1 - 50 Users Chart]()
+<img width="578" height="394" alt="image" src="https://github.com/user-attachments/assets/1b7a952e-b7b3-491e-9826-0f08c3181330" />
 
 **User: 100 | Ramp: 10**
 
-![Skenario 1 - 100 Users Stats]()
-
-![Skenario 1 - 100 Users Chart]()
+<img width="575" height="392" alt="image" src="https://github.com/user-attachments/assets/ec5d39e2-1752-43c1-8431-788960d6b4cb" />
 
 **User: 200 | Ramp: 10**
 
+<img width="575" height="396" alt="image" src="https://github.com/user-attachments/assets/3fdc0337-179c-476f-bc83-4a1efb74753d" />
 
 Pada 200 user, sistem mulai mengalami kegagalan sehingga angka ini tidak dipakai sebagai hasil akhir.
-
-
-![Skenario 1 - 200 Users Stats]()
-
-![Skenario 1 - 200 Users Chart]()
-
-![Skenario 1 - Summary]()
 
 **Rata-rata RPS** tertinggi dengan tingkat kegagalan 0%: **83.2 RPS**
 
@@ -625,24 +615,17 @@ Tujuan skenario ini adalah mencari jumlah **concurrent user tertinggi** yang mas
 
 **User: 100 | Ramp: 50**
 
-<img width="579" height="396" alt="s2 - 1" src="https://github.com/user-attachments/assets/d2f35540-374c-444e-9b21-2f6f6dfe3881" />
-
+<img width="570" height="389" alt="image" src="https://github.com/user-attachments/assets/d876e36f-6776-4d24-84f9-227eb0d8d4ff" />
 
 **User: 200 | Ramp: 50**
 
-<img width="571" height="392" alt="s2 - 2" src="https://github.com/user-attachments/assets/8cfbe8c6-8c81-4678-8ac9-fc1043110ab2" />
-
+<img width="569" height="394" alt="image" src="https://github.com/user-attachments/assets/ffac4744-0fb7-43ad-b45e-b60f56efd62d" />
 
 **User: 300 | Ramp: 50**
 
-<img width="571" height="389" alt="s2 - 300" src="https://github.com/user-attachments/assets/b16274c0-6c35-41f9-bb90-a68578179c43" />
+<img width="572" height="394" alt="image" src="https://github.com/user-attachments/assets/20e1ee88-a53c-4369-9a21-d464d9a5bc54" />
 
-
-**User: 400 | Ramp: 50**
-
-Pada 400 user, sistem mulai mengalami kegagalan sebesar 57%, menandakan batas kapasitas terlampaui.
-
-<img width="573" height="392" alt="s2 - 400" src="https://github.com/user-attachments/assets/09695af5-b9d1-4653-a928-47e9c3949c2d" />
+Pada 300 user, sistem mulai mengalami kegagalan sebesar 57%, menandakan batas kapasitas terlampaui.
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -662,15 +645,13 @@ Pengujian diulang dengan ramp rate lebih agresif (100 user/detik) untuk melihat 
 
 **User: 100 | Ramp: 100**
 
-<img width="572" height="392" alt="s3 - 100" src="https://github.com/user-attachments/assets/d98f3639-bef4-4dfd-bede-54b983e07c1e" />
-
+<img width="575" height="396" alt="image" src="https://github.com/user-attachments/assets/128f030e-ed94-468d-be39-1c8428bd8cb9" />
 
 **User: 200 | Ramp: 100**
 
+<img width="574" height="394" alt="image" src="https://github.com/user-attachments/assets/4eb5a247-ea15-4707-b524-7434cdf16082" />
+
 Pada ramp 100, sistem sudah gagal di 200 user karena koneksi datang terlalu cepat sebelum backend sempat warm up.
-
-<img width="572" height="391" alt="s3 - 200" src="https://github.com/user-attachments/assets/10866145-4959-4958-960d-1b112e187af2" />
-
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -688,20 +669,13 @@ Ramp rate dinaikkan ke 200 user/detik untuk mensimulasikan lonjakan traffic mend
 
 **User: 100 | Ramp: 200**
 
-<img width="576" height="394" alt="s4 - 100" src="https://github.com/user-attachments/assets/58c69f82-2b28-4b71-a2a4-100a55a16e3d" />
-
+<img width="568" height="387" alt="image" src="https://github.com/user-attachments/assets/f2f938b6-b683-484f-8569-68477d705f1b" />
 
 **User: 200 | Ramp: 200**
 
-<img width="574" height="391" alt="s4 - 200" src="https://github.com/user-attachments/assets/339d0886-16fe-4b54-8fee-68beed3d3dd8" />
-
-
-**User: 300 | Ramp: 200**
+<img width="575" height="393" alt="image" src="https://github.com/user-attachments/assets/7f64f9d4-5d88-467e-8e76-d82614f39e4f" />
 
 Pada 300 user dengan ramp 200, sistem tidak mampu menampung lonjakan dan mengalami 73% failure.
-
-<img width="574" height="387" alt="s4 - 300" src="https://github.com/user-attachments/assets/c00dceb6-ea15-44c0-b2b7-ff942e512acf" />
-
 
 | Run | Users | Ramp | Failure |
 |-----|-------|------|---------|
@@ -720,14 +694,14 @@ Skenario paling ekstrem — seluruh user masuk hampir serentak (ramp 500 user/de
 
 **User: 100 | Ramp: 500**
 
-<img width="572" height="390" alt="s5 - 100" src="https://github.com/user-attachments/assets/50d25339-e3ba-4e3a-8518-5f4cd44738d7" />
-
+<img width="574" height="390" alt="image" src="https://github.com/user-attachments/assets/73986a0a-cc3e-41bb-a91d-4d51009b5e3e" />
 
 **User: 200 | Ramp: 500**
 
+<img width="572" height="394" alt="image" src="https://github.com/user-attachments/assets/b56f6386-8711-473f-bd30-873d4977043c" />
+
 Pada ramp 500, bahkan 200 user sudah menyebabkan kegagalan karena sistem tidak punya waktu untuk mendistribusikan koneksi secara merata.
 
-<img width="575" height="386" alt="s5 - 200" src="https://github.com/user-attachments/assets/2ea4e9b4-2272-4145-a015-a9ab357dafad" />
 
 
 | Run | Users | Ramp | Failure |
@@ -782,6 +756,8 @@ docker stats
 ```
 
 ### Screenshot
+
+<img width="390" height="324" alt="image" src="https://github.com/user-attachments/assets/2cffcd50-9360-45f0-a03a-ff2e410ae693" />
 
 Untuk setiap skenario:
 
