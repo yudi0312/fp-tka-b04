@@ -590,7 +590,7 @@ Buka dashboard Locust di browser: http://localhost:8089/
 <img width="1920" height="663" alt="image" src="https://github.com/user-attachments/assets/e061776a-f18a-46d1-935c-d29f8638e4f5" />
 
 
-### Skenario 1
+### Skenario 1: Maximum RPS (0% Failure)
 
 Tujuan skenario ini adalah mencari nilai **RPS (Request Per Second) tertinggi** yang dapat dicapai sistem dengan **tingkat kegagalan 0%**. Pengujian dilakukan dengan menaikkan jumlah user secara bertahap menggunakan ramp rate 10 user/detik.
 
@@ -598,13 +598,40 @@ Tujuan skenario ini adalah mencari nilai **RPS (Request Per Second) tertinggi** 
 
 <img width="578" height="394" alt="image" src="https://github.com/user-attachments/assets/1b7a952e-b7b3-491e-9826-0f08c3181330" />
 
+#### Cek CPU & RAM
+
+<img width="960" height="600" alt="image" src="https://github.com/user-attachments/assets/b6c23f96-e63f-48b9-a015-02d724b7e90c" />
+
+
 **User: 100 | Ramp: 10**
 
 <img width="575" height="392" alt="image" src="https://github.com/user-attachments/assets/ec5d39e2-1752-43c1-8431-788960d6b4cb" />
 
+#### Cek CPU & RAM
+
+<img width="960" height="600" alt="image" src="https://github.com/user-attachments/assets/8efa13cd-2559-4973-a001-2121e6723ed5" />
+
+
 **User: 200 | Ramp: 10**
 
 <img width="575" height="396" alt="image" src="https://github.com/user-attachments/assets/3fdc0337-179c-476f-bc83-4a1efb74753d" />
+
+**BARU**
+
+<img width="1140" height="801" alt="WhatsApp Image 2026-06-19 at 16 27 24" src="https://github.com/user-attachments/assets/1bc5c883-1b6a-4615-a9e6-c11cb19c41ab" />
+
+
+#### Cek CPU & RAM
+
+<img width="960" height="600" alt="image" src="https://github.com/user-attachments/assets/72fa1f24-94d6-4d81-b0b6-e299999e0844" />
+
+**User: 300 | Ramp: 10**
+
+<img width="1159" height="783" alt="WhatsApp Image 2026-06-19 at 16 34 18" src="https://github.com/user-attachments/assets/d002baab-3cb0-4a64-ab15-ebe9c6bef995" />
+
+#### Cek CPU & RAM
+
+<img width="960" height="600" alt="image" src="https://github.com/user-attachments/assets/54d5bc6a-3c57-4354-a79d-90c7498415aa" />
 
 Pada 200 user, sistem mulai mengalami kegagalan sehingga angka ini tidak dipakai sebagai hasil akhir.
 
@@ -613,14 +640,27 @@ Pada 200 user, sistem mulai mengalami kegagalan sehingga angka ini tidak dipakai
 | #1 | 50 | 10 | ~59.2 | 0% |
 | #2 | 100 | 10 | ~116.3 | 0% |
 | #3 | 200 | 10 | ~223.6 | 40% |
+| #4 | 300 | 10 | ~223.6 | 40% |
 
-**Rata-rata RPS tertinggi dengan tingkat kegagalan 0%: 116.3 RPS**
+Pada pengujian dengan 200 user, sistem mulai mengalami kegagalan sebesar 40%, sehingga hasil tersebut tidak memenuhi kriteria 0% failure.
 
+Nilai RPS tertinggi dengan tingkat kegagalan 0% diperoleh pada konfigurasi:
+
+```
+100 User
+Spawn Rate 10
+RPS = 116.3
+Failure = 0%
+```
+Sehingga maksimum performa sistem yang memenuhi requirement adalah:
+```
+116.3 RPS
+```
 ---
 
-### Skenario 2
+### Skenario 2 (Peak Concurrency (Spawn Rate 50))
 
-Tujuan skenario ini adalah mencari jumlah **concurrent user tertinggi** yang masih dapat dilayani sistem dengan **failure 0%**, menggunakan ramp rate 50 user/detik.
+Tujuan pengujian ini adalah mencari jumlah concurrent user tertinggi yang masih dapat dilayani sistem tanpa kegagalan pada spawn rate 50 user/detik.
 
 **User: 100 | Ramp: 50**
 
@@ -630,11 +670,14 @@ Tujuan skenario ini adalah mencari jumlah **concurrent user tertinggi** yang mas
 
 <img width="569" height="394" alt="image" src="https://github.com/user-attachments/assets/ffac4744-0fb7-43ad-b45e-b60f56efd62d" />
 
+**BARU**
+<img width="1150" height="781" alt="WhatsApp Image 2026-06-19 at 16 18 26 (1)" src="https://github.com/user-attachments/assets/e7ba6db2-9112-4b71-959b-9daf15376aae" />
+
 **User: 300 | Ramp: 50**
 
 <img width="572" height="394" alt="image" src="https://github.com/user-attachments/assets/20e1ee88-a53c-4369-9a21-d464d9a5bc54" />
 
-Pada 300 user, sistem mulai mengalami kegagalan sebesar 50%, menandakan batas kapasitas terlampaui.
+Pada 300 user, sistem mulai mengalami kegagalan sehingga kapasitas maksimum telah terlampaui.
 
 | Run | Users | Ramp | RPS | Failure |
 |-----|-------|------|-----|---------|
@@ -647,7 +690,7 @@ Jumlah **concurrent user** tertinggi yang masih dapat dilayani dengan failure 0%
 
 ---
 
-### Skenario 3
+### Skenario 3 - Peak Concurrency (Spawn Rate 100)
 
 Pengujian diulang dengan ramp rate lebih agresif (100 user/detik) untuk melihat apakah sistem tetap stabil saat jumlah user naik lebih cepat.
 
@@ -658,6 +701,18 @@ Pengujian diulang dengan ramp rate lebih agresif (100 user/detik) untuk melihat 
 **User: 200 | Ramp: 100**
 
 <img width="574" height="394" alt="image" src="https://github.com/user-attachments/assets/4eb5a247-ea15-4707-b524-7434cdf16082" />
+
+baru
+
+<img width="1168" height="793" alt="WhatsApp Image 2026-06-19 at 16 41 05" src="https://github.com/user-attachments/assets/7cecc690-0028-49ae-be86-f34cc730cd8e" />
+
+#### Cek CPU & RAM
+
+<img width="960" height="600" alt="image" src="https://github.com/user-attachments/assets/ab9e318c-211c-48e4-adce-711ffce4a744" />
+
+<img width="960" height="600" alt="Screenshot 2026-06-19 163722" src="https://github.com/user-attachments/assets/2e23a48e-e287-44fc-9812-18ca1449c22e" />
+
+
 
 Pada ramp 100, sistem sudah gagal di 200 user karena koneksi datang terlalu cepat sebelum backend sempat warm up.
 
@@ -765,6 +820,11 @@ docker stats
 <img width="390" height="324" alt="image" src="https://github.com/user-attachments/assets/2cffcd50-9360-45f0-a03a-ff2e410ae693" />
 
 <img width="390" height="323" alt="WhatsApp Image 2026-06-19 at 13 07 57" src="https://github.com/user-attachments/assets/7b69f960-1dca-4c34-9742-5dd2d728bbbc" />
+
+
+## Skenario 1
+
+<img width="960" height="600" alt="image" src="https://github.com/user-attachments/assets/dab43131-a83f-4d0c-8737-b22f156f7451" />
 
 ### Menulis README
 
